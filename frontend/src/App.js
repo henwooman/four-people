@@ -16,7 +16,7 @@ function App() {
         style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/background.png)` }}
       >
         {/* Header 컴포넌트 추가 */}
-        <Header/>
+        {/* <Header/> */}
         {/* BannerBox 컴포넌트 추가 - Header 바로 아래에 위치 */}
         {/* <BannerBox/> */}
         {/* 이곳에 콘텐츠 추가 */}
