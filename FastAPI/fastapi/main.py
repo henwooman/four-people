@@ -205,8 +205,15 @@ def analyze_plate_image(file_path: str) -> tuple[str, float]:
         return f"에러: {str(e)}", 0.0
 
 
-def analyze_assist_device(file_path: str) -> str:
-    """보조기구 분석 함수"""
+def analyze_assist_device(file_path: str, conf_threshold: float = 0.6) -> str:
+    """보조기구 분석 함수
+    Args:
+        file_path (str): 분석할 이미지 파일 경로
+        conf_threshold (float): 감지 신뢰도 임계값 (기본값: 0.6)
+    
+    Returns:
+        str: 분석 결과 메시지
+    """
     try:
         print("\n=== 보조기구 분석 시작 ===")
         image = Image.open(file_path)
@@ -215,13 +222,15 @@ def analyze_assist_device(file_path: str) -> str:
         results.show()  # 바로 결과 이미지 표시
         print("보조기구 감지 모델 실행 완료")
 
-        detected = len(results.xyxy[0]) > 0
+        # confidence score가 threshold 이상인 객체만 필터링
+        confident_detections = results.xyxy[0][results.xyxy[0][:, 4] >= conf_threshold]
+        detected = len(confident_detections) > 0
         
         if detected:
-            print("보조기구 감지됨")
+            print(f"보조기구 감지됨 (신뢰도 {conf_threshold} 이상)")
             return "합법: 객체가 탐지되었습니다."
         else:
-            print("보조기구 감지되지 않음")
+            print(f"보조기구 감지되지 않음 (신뢰도 {conf_threshold} 이상 객체 없음)")
             return "불법: 객체가 탐지되지 않았습니다."
 
     except Exception as e:
